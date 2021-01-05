@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workeracoes-deployment
+  labels:
+    app: workeracoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workeracoes
+  template:
+    metadata:
+      labels:
+        app: workeracoes
+    spec:
+      containers:
+      - name: workeracoes
+        image: renatogroffe/workeracoes-kafka-dotnet5:latest
+        env:
+          - name: MongoDatabase
+            value: DBAcoes
+          - name: MongoCollection
+            value: HistoricoAcoes
+          - name: ApacheKafka__GroupId
+            value: WorkerAcoes
+          - name: ConnectionStrings__AppConfiguration
+            valueFrom:
+                secretKeyRef:
+                  name: apiacoes-secrets
+                  key: AppConfiguration
+        ports:
+        - containerPort: 80
